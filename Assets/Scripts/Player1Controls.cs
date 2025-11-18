@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Collider))]
@@ -18,6 +19,13 @@ public class Player1Controls : MonoBehaviour
     public int attackDamage = 5;           // Damage dealt to enemies per attack
     public float attackRange = 2f;         // How far the player can hit enemies
     public LayerMask enemyLayer;           // Which layers contain enemies (set in Inspector)
+
+    [Header("Health Settings")]
+    public int maxHealth = 100;            // Player maximum health
+    public int currentHealth;              // Player current health
+
+    // Event fired when health changes: current, max
+    public event Action<int,int> OnHealthChanged;
 
     // ========== PRIVATE VARIABLES (Internal use only) ==========
     private Rigidbody rb;                  // Reference to the Rigidbody component
@@ -55,6 +63,10 @@ public class Player1Controls : MonoBehaviour
         // Log warning if enemy layer is not set
         if (enemyLayer == 0)
             Debug.LogWarning("Enemy Layer not set in PlayerController! Attacks won't hit enemies.");
+
+        // Initialize health
+        currentHealth = maxHealth;
+        OnHealthChanged?.Invoke(currentHealth, maxHealth);
     }
 
     // ========== UPDATE (Runs every frame) ==========
@@ -200,5 +212,52 @@ public class Player1Controls : MonoBehaviour
     public float GetAttackCooldownProgress()
     {
         return canAttack ? 1f : 0f; // Simple implementation - expand as needed
+    }
+
+    // ========== HEALTH METHODS ==========
+    /// Apply damage to the player
+    public void TakeDamage(int damage)
+    {
+        if (damage <= 0 || IsDead())
+            return;
+
+        currentHealth -= damage;
+        if (currentHealth < 0)
+            currentHealth = 0;
+
+        Debug.Log($"Player took {damage} damage! Health: {currentHealth}/{maxHealth}");
+        OnHealthChanged?.Invoke(currentHealth, maxHealth);
+
+        if (currentHealth <= 0)
+            Die();
+    }
+
+    /// Heal the player
+    public void Heal(int amount)
+    {
+        if (amount <= 0 || IsDead())
+            return;
+
+        currentHealth = Mathf.Min(maxHealth, currentHealth + amount);
+        OnHealthChanged?.Invoke(currentHealth, maxHealth);
+    }
+
+    /// Returns whether the player is dead
+    public bool IsDead()
+    {
+        return currentHealth <= 0;
+    }
+
+    private void Die()
+    {
+        Debug.Log("Player died.");
+        // Disable controls to stop player input; other death handling can be added here
+        this.enabled = false;
+        canAttack = false;
+        // Optionally trigger a death animation if an Animator is present
+        if (animator != null)
+        {
+            animator.SetTrigger("Die");
+        }
     }
 }

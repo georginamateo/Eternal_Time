@@ -21,6 +21,7 @@ public class BasicEnemyControls : MonoBehaviour
     [Header("Combat Settings")]
     public float attackCooldown = 2f;           // Time between attacks
     public float attackDuration = 1f;           // How long the attack animation takes
+    public int attackDamage = 5;                // Damage dealt to the player when attacking
 
     [Header("Health Settings")]
     public int maxHealth = 15;                  // Maximum health points
@@ -248,10 +249,41 @@ public class BasicEnemyControls : MonoBehaviour
         animator.SetTrigger("Attack");
         Debug.Log("Enemy attacking player!");
 
-        // TODO: Here you would add code to actually damage the player
+        // After the attack animation plays, apply damage if the player is within range
+        // (we apply damage after waiting for attackDuration below so the hit coincides with the animation)
 
         // Wait for attack animation to complete
         yield return new WaitForSeconds(attackDuration);
+
+        // Apply damage at the moment of the attack
+        if (player != null)
+        {
+            float dist = Vector3.Distance(transform.position, player.position);
+            if (dist <= attackRange)
+            {
+                // Try to get the Player1Controls component on the player transform
+                var playerControls = player.GetComponent<Player1Controls>();
+                if (playerControls != null)
+                {
+                    playerControls.TakeDamage(attackDamage);
+                    Debug.Log($"Enemy dealt {attackDamage} damage to player.");
+                }
+                else
+                {
+                    // As a fallback, find an object with the Player tag and attempt damage
+                    var pObj = GameObject.FindGameObjectWithTag("Player");
+                    if (pObj != null)
+                    {
+                        var pc = pObj.GetComponent<Player1Controls>();
+                        if (pc != null)
+                        {
+                            pc.TakeDamage(attackDamage);
+                            Debug.Log($"Enemy dealt {attackDamage} damage to player (via tag lookup).");
+                        }
+                    }
+                }
+            }
+        }
 
         // Wait for remaining cooldown time
         yield return new WaitForSeconds(attackCooldown - attackDuration);
