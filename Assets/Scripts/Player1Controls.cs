@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 [RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(Collider))]
 public class Player1Controls : MonoBehaviour
 {
     // ========== PUBLIC VARIABLES (Configurable in Inspector) ==========
@@ -29,9 +30,27 @@ public class Player1Controls : MonoBehaviour
         // Get the Rigidbody component attached to this GameObject
         rb = GetComponent<Rigidbody>();
 
+        // Ensure Rigidbody is configured for reliable collisions
+        rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        rb.interpolation = RigidbodyInterpolation.Interpolate;
+        // Prevent physics from rotating the player on X/Z so MoveRotation behaves predictably
+        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+
         // If no Animator is assigned in Inspector, try to find one in child objects
         if (animator == null)
             animator = GetComponentInChildren<Animator>();
+
+        // Ensure the player has a Collider so physics collides with world geometry
+        Collider col = GetComponent<Collider>();
+        if (col == null)
+        {
+            // Add a CapsuleCollider as a reasonable default for humanoid characters
+            var capsule = gameObject.AddComponent<CapsuleCollider>();
+            capsule.height = 2f;
+            capsule.radius = 0.4f;
+            capsule.center = new Vector3(0f, 1f, 0f);
+            Debug.LogWarning("Player1Controls: No Collider found on player — added a default CapsuleCollider. Adjust in Inspector if needed.");
+        }
 
         // Log warning if enemy layer is not set
         if (enemyLayer == 0)
