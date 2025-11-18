@@ -21,7 +21,7 @@ public class BasicEnemyControls : MonoBehaviour
     [Header("Combat Settings")]
     public float attackCooldown = 2f;           // Time between attacks
     public float attackDuration = 1f;           // How long the attack animation takes
-    public int attackDamage = 5;                // Damage dealt to the player when attacking
+    public int attackDamage = 10;                // Damage dealt to the player when attacking
 
     [Header("Health Settings")]
     public int maxHealth = 15;                  // Maximum health points
@@ -249,19 +249,17 @@ public class BasicEnemyControls : MonoBehaviour
         animator.SetTrigger("Attack");
         Debug.Log("Enemy attacking player!");
 
-        // After the attack animation plays, apply damage if the player is within range
-        // (we apply damage after waiting for attackDuration below so the hit coincides with the animation)
+        // TODO: Here you would add code to actually damage the player
 
-        // Wait for attack animation to complete
+        // Wait for attack animation to complete (this is the moment the hit should land)
         yield return new WaitForSeconds(attackDuration);
 
-        // Apply damage at the moment of the attack
+        // Apply damage at the moment of the attack if the player is still in range
         if (player != null)
         {
             float dist = Vector3.Distance(transform.position, player.position);
             if (dist <= attackRange)
             {
-                // Try to get the Player1Controls component on the player transform
                 var playerControls = player.GetComponent<Player1Controls>();
                 if (playerControls != null)
                 {
@@ -270,7 +268,7 @@ public class BasicEnemyControls : MonoBehaviour
                 }
                 else
                 {
-                    // As a fallback, find an object with the Player tag and attempt damage
+                    // fallback: try to find player by tag
                     var pObj = GameObject.FindGameObjectWithTag("Player");
                     if (pObj != null)
                     {
@@ -285,8 +283,10 @@ public class BasicEnemyControls : MonoBehaviour
             }
         }
 
-        // Wait for remaining cooldown time
-        yield return new WaitForSeconds(attackCooldown - attackDuration);
+        // Wait for remaining cooldown time (ensure non-negative)
+        float postWait = Mathf.Max(attackCooldown - attackDuration, 0f);
+        if (postWait > 0f)
+            yield return new WaitForSeconds(postWait);
 
         // Reset attack state
         isAttacking = false;
