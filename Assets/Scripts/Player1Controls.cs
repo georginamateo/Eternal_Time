@@ -67,6 +67,9 @@ public class Player1Controls : MonoBehaviour
         // Initialize health
         currentHealth = maxHealth;
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
+
+        setRigidbodyState(true);
+        setColliderState(false);
     }
 
     // ========== UPDATE (Runs every frame) ==========
@@ -251,13 +254,43 @@ public class Player1Controls : MonoBehaviour
     private void Die()
     {
         Debug.Log("Player died.");
-        // Disable controls to stop player input; other death handling can be added here
+
         this.enabled = false;
         canAttack = false;
-        // Optionally trigger a death animation if an Animator is present
+
         if (animator != null)
+            animator.enabled = false;
+
+        // Remove constraints and reset velocity
+        rb.constraints = RigidbodyConstraints.None;
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+
+        // Disable root collider so it doesn't fight the ragdoll
+        GetComponent<Collider>().enabled = false;
+
+        setRigidbodyState(false);   // turn on rigidbody physics
+        setColliderState(true);     // enable child limb colliders
+    }
+
+
+        void setRigidbodyState(bool state)
+    {
+        Rigidbody[] rigidbodies = GetComponentsInChildren<Rigidbody>();
+
+        foreach (Rigidbody rigidbody in rigidbodies)
         {
-            animator.SetTrigger("Die");
+            rigidbody.isKinematic = state;
+        }
+    }
+
+        void setColliderState(bool state)
+    {
+        Collider[] colliders = GetComponentsInChildren<Collider>();
+
+        foreach (Collider col in colliders)
+        {
+            col.enabled = state;
         }
     }
 }
