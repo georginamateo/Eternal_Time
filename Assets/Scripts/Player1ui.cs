@@ -3,40 +3,53 @@ using TMPro;
 
 public class Player1ui : MonoBehaviour
 {
-	[Tooltip("TextMeshProUGUI to display health (e.g. 'HP: 100/100')")]
-	public TextMeshProUGUI healthText;
+    [Header("Health Display")]
+    public TextMeshProUGUI healthText;
 
-	[Tooltip("Optional: slider or image fill could be wired here later")]
-	public Player1Controls player;
+    [Header("Special Attack Display")]
+    public TextMeshProUGUI specialAttackText; // Add this for special attack
 
-	void Start()
-	{
-		if (player == null)
-			player = FindObjectOfType<Player1Controls>();
+    [Header("Player Reference")]
+    public Player1Controls player;
 
-		if (player != null)
-		{
-			// Initialize UI and subscribe to changes
-			UpdateHealthText(player.currentHealth, player.maxHealth);
-			player.OnHealthChanged += UpdateHealthText;
-		}
-		else
-		{
-			Debug.LogWarning("Player1ui: No Player1Controls found in scene.");
-		}
-	}
+    void Start()
+    {
+        if (player == null)
+            player = FindObjectOfType<Player1Controls>();
 
-	void OnDestroy()
-	{
-		if (player != null)
-			player.OnHealthChanged -= UpdateHealthText;
-	}
+        if (player != null)
+        {
+            // Initialize UI and subscribe to changes
+            UpdateHealthText(player.currentHealth, player.maxHealth);
+            UpdateSpecialAttackText(player.currentSpecialAttack, player.maxSpecialAttack);
 
-	private void UpdateHealthText(int current, int max)
-	{
-		if (healthText == null)
-			return;
+            player.OnHealthChanged += UpdateHealthText;
+            player.OnSpecialAttackChanged += UpdateSpecialAttackText; // Subscribe to new event
+        }
+        else
+        {
+            Debug.LogWarning("Player1ui: No Player1Controls found in scene.");
+        }
+    }
 
-		healthText.text = $"HP: {current}/{max}";
-	}
+    void OnDestroy()
+    {
+        if (player != null)
+        {
+            player.OnHealthChanged -= UpdateHealthText;
+            player.OnSpecialAttackChanged -= UpdateSpecialAttackText;
+        }
+    }
+
+    private void UpdateHealthText(int current, int max)
+    {
+        if (healthText != null)
+            healthText.text = $"HP: {current}/{max}";
+    }
+
+    private void UpdateSpecialAttackText(int current, int max)
+    {
+        if (specialAttackText != null)
+            specialAttackText.text = $"Special: {current}/{max}";
+    }
 }

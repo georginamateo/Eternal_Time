@@ -27,6 +27,9 @@ public class BasicEnemyControls : MonoBehaviour
     public int maxHealth = 15;                  // Maximum health points
     public int currentHealth;                   // Current health points
 
+    [Header("Visual Feedback")]
+    public FlashEffect flashEffect;             // Reference to flash effect component
+
     // ========== PRIVATE VARIABLES (Internal use only) ==========
     private Vector3 startPosition;              // Remember where enemy started
     private float timer;                        // Timer for wandering
@@ -64,6 +67,12 @@ public class BasicEnemyControls : MonoBehaviour
             if (playerObj != null)
                 player = playerObj.transform;
         }
+
+        // Try to get FlashEffect component if not assigned
+        if (flashEffect == null)
+            flashEffect = GetComponentInChildren<FlashEffect>();
+        if (flashEffect == null)
+            Debug.LogWarning("FlashEffect component missing from enemy! Add it for hit feedback.");
 
         // Log error if critical components are missing
         if (agent == null)
@@ -249,8 +258,6 @@ public class BasicEnemyControls : MonoBehaviour
         animator.SetTrigger("Attack");
         Debug.Log("Enemy attacking player!");
 
-        // TODO: Here you would add code to actually damage the player
-
         // Wait for attack animation to complete (this is the moment the hit should land)
         yield return new WaitForSeconds(attackDuration);
 
@@ -306,6 +313,12 @@ public class BasicEnemyControls : MonoBehaviour
         currentHealth -= damage;
         Debug.Log($"Enemy took {damage} damage! Health: {currentHealth}/{maxHealth}");
 
+        // Trigger flash effect
+        if (flashEffect != null)
+            flashEffect.Flash();
+        else
+            Debug.LogWarning("FlashEffect reference missing on enemy!");
+
         // Check if enemy died
         if (currentHealth <= 0)
         {
@@ -313,11 +326,7 @@ public class BasicEnemyControls : MonoBehaviour
         }
         else
         {
-            // Optional: Play hurt animation or sound
             Debug.Log("Enemy is hurt but still alive!");
-
-            // Optional: Make enemy more aggressive when hurt
-            // currentState = EnemyState.Chasing;
         }
     }
 
@@ -341,7 +350,7 @@ public class BasicEnemyControls : MonoBehaviour
         this.enabled = false;
 
         // Play death animation if you have one
-        // animator.SetTrigger("Die");
+        // here
 
         // Optional: Switch to dead body layer to prevent further collisions
         gameObject.layer = LayerMask.NameToLayer("Default");
@@ -349,7 +358,6 @@ public class BasicEnemyControls : MonoBehaviour
         // Destroy the enemy after a short delay
         Destroy(gameObject, 2f); // 2 second delay to see death animation
 
-        // Optional: You could also play death sound, spawn effects, drop items, etc.
     }
 
     // ========== HELPER METHODS ==========
