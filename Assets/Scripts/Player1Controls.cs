@@ -67,7 +67,7 @@ public class Player1Controls : MonoBehaviour
             capsule.height = 2f;
             capsule.radius = 0.4f;
             capsule.center = new Vector3(0f, 1f, 0f);
-            Debug.LogWarning("Player1Controls: No Collider found on player — added a default CapsuleCollider. Adjust in Inspector if needed.");
+            Debug.LogWarning("Player1Controls: No Collider found on player ï¿½ added a default CapsuleCollider. Adjust in Inspector if needed.");
         }
 
         // Try to get FlashEffect component if not assigned
@@ -93,7 +93,7 @@ public class Player1Controls : MonoBehaviour
         OnSpecialAttackChanged?.Invoke(currentSpecialAttack, maxSpecialAttack);
 
         setRigidbodyState(true);
-        setColliderState(false);
+        setColliderState(true);
 
         Debug.Log($"Player initialized with {currentHealth}/{maxHealth} health and {currentSpecialAttack}/{maxSpecialAttack} special attack");
     }
