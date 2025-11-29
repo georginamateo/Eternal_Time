@@ -284,7 +284,7 @@ MonoBehaviour:
     sceneImage: {fileID: 0}
     isOnRightSide: 0
     characterName: Bartender
-    dialogueText: '"I''m Telling you old man, that ruin''s ccursed."'
+    dialogueText: '"I''m telling you old man, that ruin''s cursed."'
     displayTime: 3
     changeSceneImage: 0
   - characterImage: {fileID: 21300000, guid: 833c80d232eacd0479312be530f99263, type: 3}
@@ -443,7 +443,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -303.43, y: -114}
+  m_AnchoredPosition: {x: -391, y: -160.6}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &365590431
@@ -1022,7 +1022,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -603.11, y: 90}
+  m_AnchoredPosition: {x: -455, y: 136}
   m_SizeDelta: {x: 326.211, y: 362.874}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1284546686
@@ -1097,7 +1097,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 603.11, y: 90}
+  m_AnchoredPosition: {x: 426, y: 145}
   m_SizeDelta: {x: 326.211, y: 362.874}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1372342529
@@ -1657,7 +1657,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -72, y: -206}
+  m_AnchoredPosition: {x: -161, y: -251}
   m_SizeDelta: {x: 662.857, y: 108.271}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1785443003
@@ -1745,7 +1745,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 0, z: -208.64026, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -1828,7 +1828,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 116}
   m_SizeDelta: {x: 880, y: 480}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1917321530
