@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
 using System.Collections;
 
@@ -26,11 +27,18 @@ public class Timer : MonoBehaviour
 	public TextMeshProUGUI popupText;
 
 	[Header("Popup Messages")]
-	public string congratulationsMessage = "Congratulations!";
+	public string congratulationsMessage = "Congratulations! \nPress SPACE to continue";
 	public string timeUpMessage = "Time's up!";
 
 	[Tooltip("Message to show when the player dies")]
 	public string youDiedMessage = "You died!";
+
+	[Header("Level Progression")]
+	[Tooltip("Name of the next scene to load when all enemies are cleared")]
+	public string nextSceneName = "";
+	
+	[Tooltip("If empty, will load the next scene in build index")]
+	public bool useNextBuildIndex = true;
 
 	[Header("Enemy Detection")]
 	[Tooltip("If true, the script will check all BasicEnemyControls in the scene and only show the congratulations message when all enemies are dead. If false, it always shows the congratulations message.")]
@@ -45,6 +53,8 @@ public class Timer : MonoBehaviour
 
 	private float remaining;
 	private Coroutine runningCoroutine;
+	private bool levelComplete = false;
+	private bool waitingForInput = false;
 
 	// Optional reference to the player to monitor death
 	public Player1Controls player;
@@ -74,6 +84,21 @@ public class Timer : MonoBehaviour
 		if (startOnAwake)
 			StartTimer();
 		UpdateTimerText(remaining);
+	}
+
+	void Update()
+	{
+		// Check for spacebar input when waiting to go to next level
+		if (waitingForInput && Input.GetKeyDown(KeyCode.Space))
+		{
+			LoadNextLevel();
+		}
+
+		// Also check if all enemies are dead during gameplay
+		if (!levelComplete && runningCoroutine != null)
+		{
+			CheckForLevelCompletion();
+		}
 	}
 
 	public void StartTimer()
@@ -122,6 +147,41 @@ public class Timer : MonoBehaviour
 			timerText.text = string.Format("{0:00}", secs);
 	}
 
+	private void CheckForLevelCompletion()
+	{
+		if (levelComplete) return;
+
+		// Check if all enemies are dead
+		var enemies = FindObjectsOfType<BasicEnemyControls>();
+		bool allDead = true;
+
+		foreach (var e in enemies)
+		{
+			if (e != null && !e.IsDead())
+			{
+				allDead = false;
+				break;
+			}
+		}
+
+		if (allDead && enemies.Length > 0)
+		{
+			OnLevelComplete();
+		}
+	}
+
+	private void OnLevelComplete()
+	{
+		levelComplete = true;
+		waitingForInput = true;
+		StopTimer();
+
+		// Show congratulations message with spacebar prompt
+		ShowPopup(congratulationsMessage);
+		
+		Debug.Log("All enemies cleared! Press SPACE to go to next level.");
+	}
+
 	private void OnTimerExpired()
 	{
 		// Determine enemy status
@@ -146,7 +206,7 @@ public class Timer : MonoBehaviour
 		// Decide message
 		if (!requireAllEnemiesDead || allDead)
 		{
-			ShowPopup(congratulationsMessage);
+			OnLevelComplete();
 		}
 		else
 		{
@@ -247,5 +307,51 @@ public class Timer : MonoBehaviour
 		
 		UpdateTimerText(remaining);
 		Debug.Log($"Timer: Added {seconds} seconds! New time: {remaining:F1}s");
+	}
+
+	/// <summary>
+	/// Load the next level/scene
+	/// </summary>
+	private void LoadNextLevel()
+	{
+		Debug.Log("Loading next level...");
+		
+		// Ensure time is running normally
+		Time.timeScale = 1f;
+		
+		if (!string.IsNullOrEmpty(nextSceneName))
+		{
+			// Load specific scene by name
+			SceneManager.LoadScene(nextSceneName);
+		}
+		else if (useNextBuildIndex)
+		{
+			// Load next scene in build index
+			int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+			int nextSceneIndex = currentSceneIndex + 1;
+			
+			// Check if next scene exists
+			if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
+			{
+				SceneManager.LoadScene(nextSceneIndex);
+			}
+			else
+			{
+				Debug.LogWarning("No next scene found in build settings. Reloading current scene.");
+				SceneManager.LoadScene(currentSceneIndex);
+			}
+		}
+		else
+		{
+			Debug.LogError("No next scene specified! Set nextSceneName or enable useNextBuildIndex.");
+		}
+	}
+
+	/// <summary>
+	/// Public method to manually trigger level completion (useful for testing or alternative win conditions)
+	/// </summary>
+	public void TriggerLevelComplete()
+	{
+		OnLevelComplete();
 	}
 }
