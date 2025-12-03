@@ -5922,8 +5922,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 397, y: 154}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: 685.1, y: 337.7}
+  m_SizeDelta: {x: 200.57, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &781556951
 MonoBehaviour:
@@ -6044,6 +6044,8 @@ MonoBehaviour:
   congratulationsMessage: Congratulations!
   timeUpMessage: Time's up!
   youDiedMessage: You died!
+  nextSceneName: 
+  useNextBuildIndex: 1
   requireAllEnemiesDead: 1
   disablePlayerOnFail: 1
   pauseGameOnFail: 0
@@ -6982,6 +6984,7 @@ MonoBehaviour:
   attackDamage: 5
   maxHealth: 15
   currentHealth: 15
+  timeBonus: 20
   flashEffect: {fileID: 905306024}
 --- !u!95 &905306020 stripped
 Animator:
@@ -8293,12 +8296,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 554b27c0d7b6b474b9a502b9a3ea7631, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  showGizmos: 1
-  gizmoColor:
-    r: 0
-    g: 1
-    b: 0
-    a: 0.3
 --- !u!1 &983965931
 GameObject:
   m_ObjectHideFlags: 0
@@ -8334,7 +8331,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -363, y: 174.4}
+  m_AnchoredPosition: {x: -596.91, y: 341.4}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &983965933
@@ -8995,7 +8992,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -362, y: 97}
+  m_AnchoredPosition: {x: -596.7, y: 247.6}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1129163376
@@ -17085,6 +17082,7 @@ MonoBehaviour:
   attackDamage: 5
   maxHealth: 15
   currentHealth: 15
+  timeBonus: 20
   flashEffect: {fileID: 2048045084}
 --- !u!195 &2048045080
 NavMeshAgent:
