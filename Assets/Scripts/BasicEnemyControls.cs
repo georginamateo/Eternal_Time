@@ -27,6 +27,9 @@ public class BasicEnemyControls : MonoBehaviour
     public int maxHealth = 15;                  // Maximum health points
     public int currentHealth;                   // Current health points
 
+    [Header("Death Rewards")]
+    public float timeBonus = 20f;               // Time bonus awarded when enemy dies (in seconds)
+
     [Header("Visual Feedback")]
     public FlashEffect flashEffect;             // Reference to flash effect component
 
@@ -335,6 +338,18 @@ public class BasicEnemyControls : MonoBehaviour
     {
         isDead = true;
         Debug.Log("Enemy died!");
+
+        // Award time bonus to the timer
+        Timer gameTimer = FindObjectOfType<Timer>();
+        if (gameTimer != null)
+        {
+            gameTimer.AddTime(timeBonus);
+            Debug.Log($"Enemy death awarded {timeBonus} seconds to timer!");
+        }
+        else
+        {
+            Debug.LogWarning("No Timer found in scene - cannot award time bonus for enemy death");
+        }
 
         // Stop all enemy behavior
         if (agent != null && agent.isActiveAndEnabled)

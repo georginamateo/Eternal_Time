@@ -233,4 +233,19 @@ public class Timer : MonoBehaviour
 			Time.timeScale = 1f;
 		}
 	}
+
+	/// <summary>
+	/// Add bonus time to the timer (e.g., when an enemy dies)
+	/// </summary>
+	/// <param name="seconds">Amount of seconds to add</param>
+	public void AddTime(float seconds)
+	{
+		remaining += seconds;
+		
+		// Don't exceed initial duration (optional - remove this check if you want unlimited time stacking)
+		// remaining = Mathf.Min(remaining, duration);
+		
+		UpdateTimerText(remaining);
+		Debug.Log($"Timer: Added {seconds} seconds! New time: {remaining:F1}s");
+	}
 }
